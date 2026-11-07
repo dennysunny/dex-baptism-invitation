@@ -40,7 +40,28 @@
         margin: 0;
       }
       body {
-        background: var(--bg);
+        background:
+          radial-gradient(
+            60vw 40vw at 8% 6%,
+            rgba(169, 187, 168, 0.38),
+            transparent 70%
+          ),
+          radial-gradient(
+            50vw 40vw at 96% 32%,
+            rgba(184, 115, 123, 0.15),
+            transparent 70%
+          ),
+          radial-gradient(
+            60vw 45vw at 4% 72%,
+            rgba(169, 187, 168, 0.3),
+            transparent 70%
+          ),
+          radial-gradient(
+            50vw 40vw at 92% 92%,
+            rgba(184, 115, 123, 0.12),
+            transparent 70%
+          ),
+          var(--bg);
         color: var(--ink);
         font:
           300 17px/1.7 Jost,
@@ -73,6 +94,12 @@
         overflow: hidden;
         border: 1px solid var(--sage);
         padding: 8px;
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow:
+          0 0 0 12px var(--bg),
+          0 0 0 13px rgba(169, 187, 168, 0.8),
+          0 0 0 28px rgba(169, 187, 168, 0.12),
+          0 40px 70px -30px rgba(46, 70, 55, 0.45);
         animation: rise 1.6s 0.1s both cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       .arch img {
@@ -148,6 +175,8 @@
         margin-top: 48px;
         border-top: 1px solid var(--line);
         border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
       }
       .facts > div {
         padding: 36px 18px;
@@ -205,6 +234,18 @@
       }
       .gal .a {
         grid-row: span 2;
+        border-radius: 999px 999px 12px 12px;
+      }
+      .gal img {
+        border-radius: 18px;
+        box-shadow: 0 22px 44px -24px rgba(46, 70, 55, 0.55);
+        transition: transform 0.9s;
+      }
+      .gal img:hover {
+        transform: scale(1.025);
+      }
+      .gal .a {
+        border-radius: 999px 999px 14px 14px;
       }
       .gal .c {
         grid-column: 1/-1;
@@ -213,8 +254,23 @@
       }
       .bw {
         position: relative;
-        padding: 0;
+        padding: 0 0 64px;
         max-width: none;
+      }
+      .bw::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: min(80vh, 620px);
+        background: linear-gradient(
+          var(--bg),
+          transparent 22%,
+          transparent 72%,
+          var(--bg)
+        );
+        pointer-events: none;
       }
       .bw img {
         width: 100%;
@@ -223,13 +279,13 @@
         display: block;
       }
       .bw div {
-        position: absolute;
-        inset: auto 0 9% 0;
-        color: #fff;
+        position: relative;
+        z-index: 1;
+        margin-top: -28px;
+        color: var(--green);
         font:
-          italic 400 clamp(24px, 5vw, 40px) "Cormorant Garamond",
+          italic 400 clamp(24px, 5vw, 38px) "Cormorant Garamond",
           serif;
-        text-shadow: 0 1px 18px rgba(0, 0, 0, 0.45);
         padding: 0 24px;
       }
       .map {
@@ -313,6 +369,33 @@
           transform: translateY(-8px);
         }
       }
+      .pt {
+        position: fixed;
+        top: -24px;
+        width: 9px;
+        height: 13px;
+        border-radius: 70% 0 70% 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        0% {
+          opacity: 0;
+          transform: translate(0, 0) rotate(0);
+        }
+        8% {
+          opacity: 0.7;
+        }
+        90% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--dx), 112vh) rotate(420deg);
+        }
+      }
       a:focus-visible {
         outline: 2px solid var(--rose);
         outline-offset: 3px;
@@ -393,12 +476,100 @@
     <section class="rv">
       <svg
         class="rule"
-        viewBox="0 0 60 14"
+        style="width: 170px; height: 26px"
+        viewBox="0 0 170 26"
         fill="none"
         stroke="currentColor"
+        stroke-width="1"
         aria-hidden="true"
       >
-        <path d="M30 2v10M26 6h8M2 7h18M40 7h18" />
+        <path d="M78 13H10M92 13h68M85 4v18M80 9h10" />
+        <g fill="#a9bba8" stroke="none">
+          <ellipse
+            cx="64"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 64 8)"
+          />
+          <ellipse
+            cx="64"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 64 18)"
+          />
+          <ellipse
+            cx="46"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 46 8)"
+          />
+          <ellipse
+            cx="46"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 46 18)"
+          />
+          <ellipse
+            cx="28"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 28 8)"
+          />
+          <ellipse
+            cx="28"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 28 18)"
+          />
+          <ellipse
+            cx="106"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 106 8)"
+          />
+          <ellipse
+            cx="106"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 106 18)"
+          />
+          <ellipse
+            cx="124"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 124 8)"
+          />
+          <ellipse
+            cx="124"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 124 18)"
+          />
+          <ellipse
+            cx="142"
+            cy="8"
+            rx="6"
+            ry="2.4"
+            transform="rotate(28 142 8)"
+          />
+          <ellipse
+            cx="142"
+            cy="18"
+            rx="6"
+            ry="2.4"
+            transform="rotate(-28 142 18)"
+          />
+        </g>
       </svg>
       <h2>With joyful hearts</h2>
       <p class="note">
@@ -601,6 +772,25 @@
           n.classList.add("on");
         });
       }
+      (function () {
+        for (var i = 0; i < 14; i++) {
+          var p = document.createElement("i");
+          p.className = "pt";
+          p.style.cssText =
+            "left:" +
+            Math.random() * 100 +
+            "vw;background:" +
+            (i % 3 ? "rgba(169,187,168,.85)" : "rgba(184,115,123,.55)") +
+            ";--dx:" +
+            (Math.random() * 120 - 60) +
+            "px;animation-duration:" +
+            (14 + Math.random() * 12) +
+            "s;animation-delay:" +
+            -Math.random() * 20 +
+            "s";
+          document.body.appendChild(p);
+        }
+      })();
     </script>
   </body>
 </html>
