@@ -396,6 +396,76 @@
           transform: translate(var(--dx), 112vh) rotate(420deg);
         }
       }
+      .cdt {
+        font:
+          italic 400 24px "Cormorant Garamond",
+          serif;
+        color: var(--rose);
+        margin-top: 56px;
+      }
+      .cd {
+        display: flex;
+        justify-content: center;
+        gap: clamp(12px, 4.5vw, 38px);
+        margin-top: 14px;
+      }
+      .cd div {
+        min-width: 58px;
+      }
+      .cd b {
+        display: block;
+        font:
+          400 clamp(42px, 12vw, 68px)/1 "Cormorant Garamond",
+          serif;
+        color: var(--green);
+        font-variant-numeric: tabular-nums;
+      }
+      .cd span {
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--mute);
+      }
+      .snd {
+        position: fixed;
+        right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        z-index: 9;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 1px solid var(--sage);
+        background: rgba(255, 255, 255, 0.88);
+        color: var(--green);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 8px 24px -10px rgba(46, 70, 55, 0.5);
+      }
+      .snd svg {
+        width: 22px;
+        height: 22px;
+      }
+      .snd .w {
+        display: none;
+      }
+      .snd.on .w {
+        display: block;
+      }
+      .snd.on .x {
+        display: none;
+      }
+      .snd:not(.on) {
+        animation: ring 2.4s infinite;
+      }
+      @keyframes ring {
+        0% {
+          box-shadow: 0 0 0 0 rgba(184, 115, 123, 0.45);
+        }
+        100% {
+          box-shadow: 0 0 0 14px rgba(184, 115, 123, 0);
+        }
+      }
       a:focus-visible {
         outline: 2px solid var(--rose);
         outline-offset: 3px;
@@ -635,6 +705,17 @@
       <p class="recep">
         Reception to follow at <b>Powathil Hall</b>,<br />near the church.
       </p>
+      <p class="cdt" id="cdt">Counting down to the big day</p>
+      <div
+        class="cd"
+        role="timer"
+        aria-label="Countdown to the baptism on 2 January 2027"
+      >
+        <div><b id="cd1">--</b><span>Days</span></div>
+        <div><b id="cd2">--</b><span>Hours</span></div>
+        <div><b id="cd3">--</b><span>Mins</span></div>
+        <div><b id="cd4">--</b><span>Secs</span></div>
+      </div>
     </section>
 
     <section class="rv">
@@ -733,6 +814,26 @@
       </div>
     </section>
 
+    <button
+      class="snd"
+      id="snd"
+      aria-pressed="false"
+      aria-label="Turn soft chime on"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 9v6h4l5 4V5L8 9z" />
+        <path class="w" d="M16 9a4 4 0 0 1 0 6M18.500 6.500a8 8 0 0 1 0 11" />
+        <path class="x" d="M17 9l5 6M22 9l-5 6" />
+      </svg>
+    </button>
     <footer>
       <svg
         width="26"
@@ -790,6 +891,104 @@
             "s";
           document.body.appendChild(p);
         }
+      })();
+      (function () {
+        function z(n) {
+          return n < 10 ? "0" + n : n;
+        }
+        function s(i, v) {
+          document.getElementById(i).textContent = v;
+        }
+        var T = new Date("2027-01-02T08:00:00+05:30").getTime();
+        function tick() {
+          var q = Math.floor(Math.max(0, T - Date.now()) / 1000);
+          if (q === 0) s("cdt", "Today is the day");
+          s("cd1", Math.floor(q / 86400));
+          s("cd2", z(Math.floor((q % 86400) / 3600)));
+          s("cd3", z(Math.floor((q % 3600) / 60)));
+          s("cd4", z(q % 60));
+        }
+        tick();
+        setInterval(tick, 1000);
+        var ac,
+          mg,
+          on = false,
+          tm,
+          asked = false,
+          b = document.getElementById("snd"),
+          N = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 392];
+        function bell(f, t, v, d) {
+          [
+            [1, 1],
+            [2.76, 0.18],
+            [5.4, 0.06],
+          ].forEach(function (p) {
+            var o = ac.createOscillator(),
+              g = ac.createGain();
+            o.type = "sine";
+            o.frequency.value = f * p[0];
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(v * p[1], t + 0.015);
+            g.gain.exponentialRampToValueAtTime(
+              0.0001,
+              t + d / Math.pow(p[0], 0.4),
+            );
+            o.connect(g);
+            g.connect(mg);
+            o.start(t);
+            o.stop(t + d + 0.1);
+          });
+        }
+        function play() {
+          if (!on) return;
+          var t = ac.currentTime + 0.05;
+          bell(N[Math.floor(Math.random() * N.length)], t, 0.7, 3.6);
+          if (Math.random() < 0.4)
+            bell(N[Math.floor(Math.random() * 5)], t + 0.55, 0.45, 3);
+          tm = setTimeout(play, 2600 + Math.random() * 2800);
+        }
+        function init() {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return false;
+          ac = new AC();
+          mg = ac.createGain();
+          mg.gain.value = 0.07;
+          var d = ac.createDelay(1),
+            fb = ac.createGain();
+          d.delayTime.value = 0.45;
+          fb.gain.value = 0.4;
+          mg.connect(ac.destination);
+          mg.connect(d);
+          d.connect(fb);
+          fb.connect(d);
+          d.connect(ac.destination);
+          return true;
+        }
+        function tog() {
+          asked = true;
+          try {
+            if (!ac && !init()) return;
+            if (ac.state === "suspended") ac.resume();
+            on = !on;
+            clearTimeout(tm);
+            if (on) play();
+            b.classList.toggle("on", on);
+            b.setAttribute("aria-pressed", on);
+            b.setAttribute(
+              "aria-label",
+              on ? "Turn soft chime off" : "Turn soft chime on",
+            );
+          } catch (e) {}
+        }
+        b.addEventListener("click", tog);
+        function first(e) {
+          if (e.target.closest && e.target.closest("#snd")) return;
+          document.removeEventListener("click", first);
+          document.removeEventListener("keydown", first);
+          if (!asked) tog();
+        }
+        document.addEventListener("click", first);
+        document.addEventListener("keydown", first);
       })();
     </script>
   </body>
